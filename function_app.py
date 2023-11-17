@@ -14,15 +14,19 @@ def HttpTrigger(req: func.HttpRequest) -> func.HttpResponse:
     token = default_credential.get_token(
         "https://cognitiveservices.azure.com/.default")
 
-    api_subscption_key = "your api subscription key"
+    # Your APIM Subscription Key
+    api_subscription_key = "your api subscription key"
 
+    # API Type is Azure
     openai.api_type = "azure"
+
     # APIM Endpoint
+    openai.api_base = "https://apim-emt-aip-dev-01.azure-api.net/"
     openai.api_version = "2023-07-01-preview"
 
     # DO NOT USE ACTUAL AZURE OPENAI SERVICE KEY
-    openai.api_key = api_subscption_key
-    openai.api_base = "https://apim-emt-aip-dev-01.azure-api.net/"
+    openai.api_key = api_subscription_key
+
     response = openai.ChatCompletion.create(deployment_id="gpt-35-16",
                                             messages=[
                                                 {"role": "system",
@@ -37,7 +41,7 @@ def HttpTrigger(req: func.HttpRequest) -> func.HttpResponse:
                                             temperature=0,
                                             headers={
                                                 'Authorization': f'{token}',
-                                                'ocp-apim-subscription-key': f'{api_subscption_key}'
+                                                'ocp-apim-subscription-key': f'{api_subscription_key}'
                                             }
                                             )
     return func.HttpResponse(f"{response.choices[0].message.role}: {response.choices[0].message.content}")
